@@ -2,10 +2,15 @@ import request from "../config/common.js";
 import {
   validate_response,
   validate_email,
-  validate_body,
-} from "../helpers/filter_response.js";
+} from "../helpers/response_assertions.js";
+import {
+  validate_user_schema,
+  validate_post_schema,
+  validate_comment_schema,
+} from "../helpers/schema_validation.js";
 import { DESIRED_USER } from "../helpers/constants.js";
-let GLOBAL_VARIABLE;
+
+let user_object;
 let list = [];
 
 describe("api flow", () => {
@@ -16,7 +21,10 @@ describe("api flow", () => {
       const desiredUser = res.body.find(
         (user) => user.username === DESIRED_USER
       );
-      GLOBAL_VARIABLE = desiredUser.username;
+      user_object = desiredUser.username;
+      res.body.forEach((element) => {
+        validate_user_schema(element);
+      });
       done();
     });
   });
@@ -27,6 +35,7 @@ describe("api flow", () => {
       validate_body(res);
       res.body.forEach((element) => {
         list.push(element);
+        validate_post_schema(element);
       });
       done();
     });
@@ -38,10 +47,11 @@ describe("api flow", () => {
         validate_response(res);
         validate_body(res);
         res.body.forEach((element) => {
-          validate_email(element.email);
+          validate_email(element);
+          validate_comment_schema(element);
         });
+        done();
       });
     });
-    done();
   });
 });
