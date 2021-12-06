@@ -2,7 +2,8 @@ import request from "../config/common.js";
 import {
   validate_response,
   validate_email,
-} from "../helpers/response_assertions.js";
+  validate_body,
+} from "../helpers/response_validation.js";
 import {
   validate_user_schema,
   validate_post_schema,
@@ -14,7 +15,7 @@ let user_object;
 let list = [];
 
 describe("api flow", () => {
-  it("Get /users", (done) => {
+  it("Get User", (done) => {
     request.get("users").end((err, res) => {
       validate_response(res);
       validate_body(res);
@@ -29,7 +30,7 @@ describe("api flow", () => {
     });
   });
 
-  it("GET POSTS", (done) => {
+  it("Get Posts", (done) => {
     request.get("posts").end((err, res) => {
       validate_response(res);
       validate_body(res);
@@ -41,16 +42,15 @@ describe("api flow", () => {
     });
   });
 
-  it("email validation", (done) => {
+  it("Email Validation", () => {
     list.forEach((element) => {
-      request.get(`posts/${element.id}/comments`).end((err, res) => {
+      return request.get(`posts/${element.id}/comments`).then((res) => {
         validate_response(res);
         validate_body(res);
         res.body.forEach((element) => {
-          validate_email(element);
+          validate_email(element.email);
           validate_comment_schema(element);
         });
-        done();
       });
     });
   });

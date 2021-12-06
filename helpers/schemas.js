@@ -41,7 +41,7 @@ export const postSchema = {
 export const commentSchema = {
   title: "Post schema",
   type: "object",
-  required: ["postId", "id", "name", "email", "bodyx"],
+  required: ["postId", "id", "name", "email", "body"],
   properties: {
     postId: {
       type: "number",
@@ -55,7 +55,7 @@ export const commentSchema = {
     email: {
       type: "string",
     },
-    bodyx: {
+    body: {
       type: "string",
     },
   },
